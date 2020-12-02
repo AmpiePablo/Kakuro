@@ -292,7 +292,7 @@ reset(I, J, N, M) :-
 
 
 /****************************************************
- *                 definir solución
+ *                 definir soluciÃ³n
  ****************************************************/
 
 enqueue(Qname, T) :-
@@ -1036,6 +1036,21 @@ getkakuro(I, J, N, M, R) :-
             )
         )
     ).
+
+
+generarkakuro(N, M, R) :-
+    (   retract(blank(-1,-1)),
+        assert(blank(-1,-1))
+    ;   assert(blank(-1,-1))
+    ),
+    (   retract(num(-1,-1,-1)),
+        assert(num(-1,-1,-1))
+    ;   assert(num(-1,-1,-1))
+    ),
+    reset(N, M),
+    spacegen(N, M),
+    llenar(N, M),
+    getkakuro(N, M, R).
 
 
 
