@@ -18,17 +18,48 @@ public class mainWindow extends JFrame implements ActionListener {
     private ArrayList<Game> juegos;
 
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * mainWindow
+     *
+     * **********Entradas*************************
+     * @param sinEntradas, pJuegos
+     *
+     * **********Salida***************************
+     * La ventana inicial del programa
+     *
+     * **********Objetivo*************************
+     * Existe una sobre carga, para poder pasar
+     * los diferentes juegos realizados entre ventanas
+     * y así no usar variables globales
+     * ********************************************
+     */
     public mainWindow(){
         components();
         componentsPanel();
     }
-
     public mainWindow(ArrayList<Game> pJuegos){
         this.juegos = pJuegos;
         components();
         componentsPanel();
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * componentsPanel
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * La ventana con caracteristicas de diseño
+     *
+     * **********Objetivo*************************
+     * Crear la ventana o frame del programa
+     * ********************************************
+     */
     public void componentsPanel(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(250,10,950,650);
@@ -39,6 +70,22 @@ public class mainWindow extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * components
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * Todos los componentes en el frame
+     *
+     * **********Objetivo*************************
+     * Crea nuevas etiquetas, botones, para la intereaccion
+     * del usuario con el sistema
+     * ********************************************
+     */
     public void components(){
         try {
             title = new JLabel();
@@ -103,9 +150,8 @@ public class mainWindow extends JFrame implements ActionListener {
 
     }
 
-    public ArrayList<Game> getJuegos() {
-        return juegos;
-    }
+    /*GETS Y SETS*/
+    public ArrayList<Game> getJuegos() { return juegos; }
     public void setJuegos(ArrayList<Game> pGames){
         juegos = pGames;
     }
@@ -118,10 +164,6 @@ public class mainWindow extends JFrame implements ActionListener {
         }
         if(e.getSource().equals(newGame)){
             DataGame dg = new DataGame(this);
-        }
-        if(e.getSource().equals(replayGame)){
-            replayWindow replay = new replayWindow();
-            setVisible(false);
         }
     }
 }

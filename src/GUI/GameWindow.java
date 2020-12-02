@@ -45,6 +45,21 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
     private JDialog numbers;
     private int[] actual;
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * GameWindow
+     *
+     * **********Entradas*************************
+     * @param pGame
+     *
+     * **********Salida***************************
+     * una ventana con los componentes del juego
+     *
+     * **********Objetivo*************************
+     * Es el constructor de la clase GameWindow
+     * ********************************************
+     */
     public GameWindow(Game pGame){
         this.actualGame = pGame;
         this.actual = new int[2];
@@ -69,6 +84,23 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
         addTextArea("Resultados del jugador: "+actualGame.getPlayer()+"\n");
 
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * createBoard
+     *
+     * **********Entradas*************************
+     * @param pBoard
+     *
+     * **********Salida***************************
+     * El tablero del kakuro en pantalla
+     *
+     * **********Objetivo*************************
+     * tomar el tablero de entrada y generar un nuevo
+     * tablero para realizar el juego de kakuro
+     * ********************************************
+     */
     //initial
     public void createBoard(int [][] pBoard){
         for(int i = 0;i<pBoard.length;i++){
@@ -96,6 +128,23 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
             matrixButton.add(temp);
         }
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * componentsFrame
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * La ventana de juego principal con las
+     * caracteristicas modificadas y diseñadas
+     *
+     * **********Objetivo*************************
+     * Mostrar la ventana del juego de forma entendible
+     * ********************************************
+     */
     public void componentsFrame(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(250,10,950,650);
@@ -105,6 +154,24 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
         setTitle("Game Kakuro");
         setVisible(true);
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * components
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * Los componentes del juego adaptados a la ventana
+     * de juego
+     *
+     * **********Objetivo*************************
+     * Crear nuevos componentes como botones, etiquetas,
+     * campos de texto, modificados al gusto del equipo
+     * ********************************************
+     */
     public void components() {
         try {
             Image imgBack = ImageIO.read(this.getClass().getResourceAsStream("../Imagenes/back.png"));
@@ -242,6 +309,24 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
             System.out.println(ex);
         }
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * addTextArea
+     *
+     * **********Entradas*************************
+     * @param pData
+     *
+     * **********Salida***************************
+     * el campo de texto modificado
+     *
+     * **********Objetivo*************************
+     * Recibir el valor de entrada y agregarlo a
+     * el campo de texto, con la verificaciones o
+     * resultados de la misma
+     * ********************************************
+     */
     public void addTextArea(String pData){
         results.append(pData);
     }
@@ -278,6 +363,22 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
             }
         }
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * componentsCrono
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * un cronometro en pantalla
+     *
+     * **********Objetivo*************************
+     * mostrar un cronometro en pantalla
+     * ********************************************
+     */
     public void componentsCrono(){
         JLabel titulo = new JLabel("Tiempo:");
         titulo.setBounds(20,60,90,40);
@@ -293,7 +394,26 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
         add(titulo);
         add(cronometro);
     }
+
+
     public void generateTablero(){ }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * run
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * El cronometro actualizandose cada segundo
+     *
+     * **********Objetivo*************************
+     * utiliza un hilo para refrescar costantemente
+     * la ventana del juego con el cronometro actual
+     * ********************************************
+     */
     @Override
     public void run() {
         Integer minInt = 0 , segInt = 0, milInt = 0;
@@ -329,20 +449,67 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
             System.out.println(ex);
         }
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * initCR
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * el cronometro iniciado
+     *
+     * **********Objetivo*************************
+     * iniciar el cronometro
+     * ********************************************
+     */
     public void initCr() {
         cronometroActivo = true;
         hilo = new Thread( this );
         hilo.start();
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * stopCr
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * el cronometro detenido
+     *
+     * **********Objetivo*************************
+     * detener el hilo
+     * ********************************************
+     */
     public void stopCr(){ cronometroActivo = false; }
+    /*GETS Y SETS*/
     public ArrayList<Game> getJuegos() { return juegos; }
     public void setJuegos(ArrayList<Game> pGames){ juegos = pGames; }
-
     public int getSelectedInt() { return selectedInt; }
     public void setSelectedInt(int selectedInt) { this.selectedInt = selectedInt; }
     public String getSelected(){ return selected; }
     public void setSelected(String selectedP){ this.selected=selectedP; }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * numberSelect
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * muestra una ventana con numeros para seleccionar
+     *
+     * **********Objetivo*************************
+     * Crear una ventana donde el usuario pueda escoger el numero que este desee
+     * ********************************************
+     */
     public void numberSelect(){
         numbers = new JDialog();
         numbers.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
