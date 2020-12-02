@@ -22,7 +22,9 @@ public class Game {
         this.column = pColumn;
         this.player = pPlayer;
     }
+
     public int getRow(){return row;}
+
     public void setRow(int pRow){this.row=pRow;}
 
     public int getColumn(){return column;}

@@ -18,6 +18,21 @@ public class DataGame extends JDialog implements ActionListener {
     private JSpinner spnColumn;
     private JFrame win;
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * DataGame
+     *
+     * **********Entradas*************************
+     * @param pWin
+     *
+     * **********Salida***************************
+     * una ventana para solicitar los datos del juego
+     *
+     * **********Objetivo*************************
+     * Es el construcutor de la clase DAtaGame
+     * ********************************************
+     */
     public DataGame(JFrame pWin){
         this.win = pWin;
         componentsDialog();
@@ -25,6 +40,22 @@ public class DataGame extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * componentsDialog
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * crea los componentes de la ventana
+     *
+     * **********Objetivo*************************
+     * Hacer un JDialog con caracteristicas para mostrar
+     * los diferentes componentes
+     * ********************************************
+     */
     public void componentsDialog(){
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setBounds(550,340,380,250);
@@ -34,6 +65,22 @@ public class DataGame extends JDialog implements ActionListener {
         setTitle("Datos del Juego");
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * components
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * Los componentes de la ventana agregados y
+     * modificados, label, buttons, spinbox
+     *
+     * **********Objetivo*************************
+     * dar diseño y forma a los componentes de la interfaz
+     * ********************************************
+     */
     public void components(){
         try {
             Image imgExit = ImageIO.read(this.getClass().getResourceAsStream("../Imagenes/cancelar.png"));
@@ -93,6 +140,25 @@ public class DataGame extends JDialog implements ActionListener {
             dispose();
         }
     }
+
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * getData
+     *
+     * **********Entradas*************************
+     * @param txtName
+     * @param spnRox
+     * @param spnColumn
+     *
+     * **********Salida***************************
+     * una clase game
+     *
+     * **********Objetivo*************************
+     * Mostrar una ventana para solicitud de datos,
+     * que sirve para formar el nuevo juego
+     * ********************************************
+     */
     public Game getData(){
         String playerName = txtName.getText();
         int row = (Integer) spnRow.getValue();

@@ -29,6 +29,22 @@ public class statWindow extends JFrame implements ActionListener{
 
     private ArrayList<Game> juegos;
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * statWindow
+     *
+     * **********Entradas*************************
+     * @param pJuegos
+     *
+     * **********Salida***************************
+     * diferentes funciones para la ventana de
+     * estadisticas
+     *
+     * **********Objetivo*************************
+     * Es el constructor de la clase statWindow
+     * ********************************************
+     */
     public statWindow(ArrayList<Game> pJuegos){
         juegos = new ArrayList<Game>();
         addgames();
@@ -37,6 +53,23 @@ public class statWindow extends JFrame implements ActionListener{
         components2();
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * componentsFrame
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * crea el frama contenedor, y le agrega forma
+     * y diseño grafico
+     *
+     * **********Objetivo*************************
+     * tomar el frame y carecterizarlo de manera que se
+     * vea bien y estructurado
+     * ********************************************
+     */
     public void componentsFrame(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(250,10,950,650);
@@ -47,7 +80,23 @@ public class statWindow extends JFrame implements ActionListener{
         setVisible(true);
     }
 
-
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * components
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * Todos los componentes de interfaz mostrados en
+     * la ventana o frame
+     *
+     * **********Objetivo*************************
+     * crear botones, labels, listas de texto, para
+     * salir y volver al inicio
+     * ********************************************
+     */
     public void components(){
         try {
             Image imgBack = ImageIO.read(this.getClass().getResourceAsStream("../Imagenes/back.png"));
@@ -101,6 +150,23 @@ public class statWindow extends JFrame implements ActionListener{
         }
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * components
+     *
+     * **********Entradas*************************
+     * @param sinEntradas
+     *
+     * **********Salida***************************
+     * Todos los componentes de interfaz mostrados en
+     * la ventana o frame
+     *
+     * **********Objetivo*************************
+     * crear botones, labels, listas de texto, para
+     * con sus respectivas caracteristicas
+     * ********************************************
+     */
     public void components2(){
         try {
             DefaultListModel listModel = new DefaultListModel();
@@ -198,6 +264,23 @@ public class statWindow extends JFrame implements ActionListener{
         }
     }
 
+    /**
+     * *******************************************
+     * **********Nombre***************************
+     * showData
+     *
+     * **********Entradas*************************
+     * @param pIndex
+     *
+     * **********Salida***************************
+     * las estadisticas de un juego
+     *
+     * **********Objetivo*************************
+     * toma el indice de entrada, toma el juego
+     * en la posición del indice de la lista
+     * y muestra los valores del mismo.
+     * ********************************************
+     */
     public void showData(int pIndex){
         Game temp = juegos.get(pIndex);
         player.setText("Jugador: "+temp.getPlayer());
@@ -209,9 +292,9 @@ public class statWindow extends JFrame implements ActionListener{
         time.setText("Tiempo: "+temp.getTime());
     }
 
-    public ArrayList<Game> getJuegos() {
-        return juegos;
-    }
+
+    /*SETS Y GETS*/
+    public ArrayList<Game> getJuegos() { return juegos; }
     public void setJuegos(ArrayList<Game> pGames){
         juegos = pGames;
     }
