@@ -6,7 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+
+import org.jpl7.Atom;
 import org.jpl7.Query;
+import org.jpl7.Term;
+import org.jpl7.Variable;
 
 
 public class GameWindow extends JFrame implements Runnable,ActionListener{
@@ -44,6 +50,10 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
     private ArrayList<JButton> numbers2;
     private JDialog numbers;
     private int[] actual;
+    private String kakuroString;
+    private String[][] matrizSolution;
+    private String[][] matrizActual;
+
 
     /**
      * *******************************************
@@ -67,22 +77,49 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
         numbers2 = new ArrayList<JButton>();
         this.cX = 20;
         this.cY = 90;
-        this.test = new int[][]{{0, 0, 1, 1, 0, 0, 1, 1, 0},
-                {0, 1, 2, 2, 1, 1, 2, 2, 1},
-                {0, 1, 2, 2, 2, 1, 2, 2, 2},
-                {1, 2, 2, 2, 2, 1, 2, 2, 2},
-                {1, 2, 2, 1, 2, 2, 2, 1, 1},
-                {0, 1, 1, 2, 2, 2, 1, 2, 2},
-                {1, 2, 2, 2, 1, 2, 2, 2, 2},
-                {1, 2, 2, 2, 1, 2, 2, 2, 0},
-                {0, 1, 2, 2, 0, 1, 2, 2, 0},};
+        matrizSolution = new String[9][9];
+        matrizActual = new String[9][9];
         componentsFrame();
-        createBoard(test);
         components();
         componentsCrono();
         initCr();
         addTextArea("Resultados del jugador: "+actualGame.getPlayer()+"\n");
+        getTablero();
 
+    }
+
+
+
+    public void getTablero(){
+        String t = "consult('src/k.pl')";
+        Query q = new Query(t);
+        System.out.println(t+""+(q.hasSolution()?"si":"no"));
+
+        java.util.HashMap solution;
+        Variable x = new Variable("R");
+        Query q1 = new Query("generarkakuro(9,9,R)");
+
+        solution = (HashMap) q1.oneSolution();
+        Term kakuro = (Term) solution.get("R");
+
+        kakuroString = kakuro.toString();
+        System.out.println(kakuroString);
+        String[] array = kakuroString.split(", ",100);
+        int cont = 0;
+        for(int j=0;j<9;j++){
+            for(int p=0;p<9;p++){
+                matrizSolution[j][p]=array[cont];
+                cont+=1;
+            }
+        }
+        for(int j=0;j<9;j++){
+            for(int p=0;p<9;p++){
+                System.out.print("r:"+matrizSolution[j][p]+",");
+            }
+            System.out.println();
+        }
+
+        createBoard(matrizSolution);
     }
 
     /**
@@ -102,29 +139,30 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
      * ********************************************
      */
     //initial
-    public void createBoard(int [][] pBoard){
+    public void createBoard(String [][] pBoard){
         for(int i = 0;i<pBoard.length;i++){
             ArrayList<JButton> temp = new ArrayList<JButton>();
             for(int j = 0; j < pBoard[i].length;j++){
                 JButton btnTemp = new JButton();
-                btnTemp.setBounds(cX,cY,45,45);
-                if(pBoard[i][j] == 0){
-                    btnTemp.setText("0");
+                btnTemp.setBounds(cX,cY,55,50);
+                if(pBoard[i][j].length()>2){
+                    btnTemp.setText(pBoard[i][j]);
+                    btnTemp.setFont(new Font("Times New Roman",Font.BOLD,8));
                     btnTemp.setEnabled(false);
-                }else if(pBoard[i][j]==1){
-                    btnTemp.setText("1");
-                    btnTemp.setEnabled(false);
-                }else if(pBoard[i][j]==2){
-                    btnTemp.setText(" ");
+                }else if(Character.isDigit(pBoard[i][j].charAt(0))){
+                    btnTemp.setText("r");
                     btnTemp.setEnabled(true);
+                }else{
+                    btnTemp.setText("N");
+                    btnTemp.setEnabled(false);
                 }
                 btnTemp.addActionListener(this);
                 add(btnTemp);
                 temp.add(btnTemp);
-                cX+=45;
+                cX+=52;
             }
             cX = 20;
-            cY += 43;
+            cY += 48;
             matrixButton.add(temp);
         }
     }
@@ -330,6 +368,27 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
     public void addTextArea(String pData){
         results.append(pData);
     }
+
+    public void reiniciar(){
+        for(int i=0;i<matrixButton.size();i++){
+            for(int j=0;j<matrixButton.get(i).size();j++){
+                if(matrixButton.get(i).get(j).getText()!="N" && matrixButton.get(i).get(j).getText().length()<2){
+                    matrixButton.get(i).get(j).setText("R");
+                }
+            }
+        }
+    }
+
+    public void verSolucion(){
+        for(int i=0;i<matrixButton.size();i++){
+            for(int j=0;j<matrixButton.get(i).size();j++){
+                String data = matrizSolution[i][j];
+                if(matrixButton.get(i).get(j).getText()!="N" && matrixButton.get(i).get(j).getText().length()<2){
+                    matrixButton.get(i).get(j).setText(data);
+                }
+            }
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(back)){
@@ -340,9 +399,13 @@ public class GameWindow extends JFrame implements Runnable,ActionListener{
             dispose();
             System.exit(0);
         }
-        if(e.getSource().equals(btnRestart)){ System.out.println("reiniciar"); }
+        if(e.getSource().equals(btnRestart)){
+            reiniciar();
+        }
         if(e.getSource().equals(btnSuggestion)){ System.out.println("Sugerencia"); }
-        if(e.getSource().equals(btnSolution)){ System.out.println("AutoSolución"); }
+        if(e.getSource().equals(btnSolution)){
+            verSolucion();
+        }
         if(e.getSource().equals(btnSave)){ System.out.println("Save"); }
         if(e.getSource().equals(btnVerify)){ System.out.println("Verificar"); }
         for(int i = 0; i<matrixButton.size();i++){
