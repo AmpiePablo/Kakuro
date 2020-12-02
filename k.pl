@@ -292,7 +292,7 @@ reset(I, J, N, M) :-
 
 
 /****************************************************
- *                 definir solución
+ *                 definir soluciÃ³n
  ****************************************************/
 
 
@@ -498,12 +498,12 @@ getkakuro(I, J, N, M, R) :-
             getkakuro(I, J1, N, M, S),
             (   blank(I, J)
             ->  num(I, J, Num),
-                R = [[Num] | S]
+                R = [Num | S]
             ;   columnsum([I, J], ColSum),
                 rowsum([I, J], RowSum),
                 (   (ColSum > 0, RowSum > 0)
-                ->  R = [[ColSum, RowSum] | S]
-                ;   R = [[] | S]
+                ->  R = [ColSum/RowSum | S]
+                ;   R = [n | S]
                 )
             )
         )
