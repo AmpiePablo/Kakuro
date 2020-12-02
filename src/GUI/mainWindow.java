@@ -5,6 +5,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class mainWindow extends JFrame implements ActionListener {
     private JLabel title;
@@ -14,9 +15,16 @@ public class mainWindow extends JFrame implements ActionListener {
     private JButton statistics;
     private JButton newGame;
     private JButton replayGame;
-    private mainWindow main;
+    private ArrayList<Game> juegos;
+
 
     public mainWindow(){
+        components();
+        componentsPanel();
+    }
+
+    public mainWindow(ArrayList<Game> pJuegos){
+        this.juegos = pJuegos;
         components();
         componentsPanel();
     }
@@ -95,15 +103,21 @@ public class mainWindow extends JFrame implements ActionListener {
 
     }
 
+    public ArrayList<Game> getJuegos() {
+        return juegos;
+    }
+    public void setJuegos(ArrayList<Game> pGames){
+        juegos = pGames;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(statistics)){
-            statWindow stat = new statWindow();
+            statWindow stat = new statWindow(juegos);
             setVisible(false);
         }
         if(e.getSource().equals(newGame)){
-            GameWindow game = new GameWindow();
-            setVisible(false);
+            DataGame dg = new DataGame(this);
         }
         if(e.getSource().equals(replayGame)){
             replayWindow replay = new replayWindow();
