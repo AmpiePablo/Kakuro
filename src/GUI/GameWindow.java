@@ -5,11 +5,11 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.ArrayList;
+import org.jpl7.Query;
 
 
-public class GameWindow extends JFrame implements ActionListener{
+public class GameWindow extends JFrame implements Runnable,ActionListener{
     //labels
     private JLabel title;
     private JLabel lblBack;
@@ -19,6 +19,7 @@ public class GameWindow extends JFrame implements ActionListener{
     private JLabel lblSuggestion;
     private JLabel lblRestart;
     private JLabel lblVerify;
+    private JLabel cronometro;
     //buttons
     private JButton back;
     private JButton btnExit;
@@ -28,13 +29,27 @@ public class GameWindow extends JFrame implements ActionListener{
     private JButton btnRestart;
     private JButton btnVerify;
     //board
+    private ArrayList<Game>  juegos;
     private int[][] test;
     private ArrayList<ArrayList<JButton>> matrixButton;
     private int cX;
     private int cY;
+    Thread hilo;
+    boolean cronometroActivo;
 
-    public GameWindow(){
+    private JTextArea results;
+    private Game actualGame;
+    private String selected;
+    private int selectedInt;
+    private ArrayList<JButton> numbers2;
+    private JDialog numbers;
+    private int[] actual;
+
+    public GameWindow(Game pGame){
+        this.actualGame = pGame;
+        this.actual = new int[2];
         this.matrixButton = new ArrayList<ArrayList<JButton>>();
+        numbers2 = new ArrayList<JButton>();
         this.cX = 20;
         this.cY = 90;
         this.test = new int[][]{{0, 0, 1, 1, 0, 0, 1, 1, 0},
@@ -49,8 +64,12 @@ public class GameWindow extends JFrame implements ActionListener{
         componentsFrame();
         createBoard(test);
         components();
-    }
+        componentsCrono();
+        initCr();
+        addTextArea("Resultados del jugador: "+actualGame.getPlayer()+"\n");
 
+    }
+    //initial
     public void createBoard(int [][] pBoard){
         for(int i = 0;i<pBoard.length;i++){
             ArrayList<JButton> temp = new ArrayList<JButton>();
@@ -64,7 +83,7 @@ public class GameWindow extends JFrame implements ActionListener{
                     btnTemp.setText("1");
                     btnTemp.setEnabled(false);
                 }else if(pBoard[i][j]==2){
-                    btnTemp.setText("2");
+                    btnTemp.setText(" ");
                     btnTemp.setEnabled(true);
                 }
                 btnTemp.addActionListener(this);
@@ -77,7 +96,6 @@ public class GameWindow extends JFrame implements ActionListener{
             matrixButton.add(temp);
         }
     }
-
     public void componentsFrame(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(250,10,950,650);
@@ -87,7 +105,6 @@ public class GameWindow extends JFrame implements ActionListener{
         setTitle("Game Kakuro");
         setVisible(true);
     }
-
     public void components() {
         try {
             Image imgBack = ImageIO.read(this.getClass().getResourceAsStream("../Imagenes/back.png"));
@@ -120,11 +137,11 @@ public class GameWindow extends JFrame implements ActionListener{
             title.setBounds(600,25,190,90);
             lblBack.setBounds(5,30,90,20);
             lblExit.setBounds(45,30,90,20);
-            lblRestart.setBounds(470,340,90,90);
-            lblSuggestion.setBounds(460,425,90,90);
-            lblSolution.setBounds(595,340,90,90);
-            lblSave.setBounds(610,425,90,93);
-            lblVerify.setBounds(750,430,170,70);
+            lblRestart.setBounds(560,340,90,90);
+            lblSuggestion.setBounds(560,425,90,90);
+            lblSolution.setBounds(665,340,90,90);
+            lblSave.setBounds(680,425,90,93);
+            lblVerify.setBounds(820,430,170,70);
 
             title.setBackground(Color.WHITE);
             lblBack.setBackground(Color.WHITE);
@@ -172,7 +189,7 @@ public class GameWindow extends JFrame implements ActionListener{
             add(btnExit);
 
             btnRestart = new JButton();
-            btnRestart.setBounds(460,310,65,65);
+            btnRestart.setBounds(550,310,65,65);
             btnRestart.setIcon(new ImageIcon(imgRestart));
             btnRestart.setBorder(new LineBorder(Color.WHITE));
             btnRestart.setContentAreaFilled(false);
@@ -181,7 +198,7 @@ public class GameWindow extends JFrame implements ActionListener{
             add(btnRestart);
 
             btnSuggestion = new JButton();
-            btnSuggestion.setBounds(460,400,65,65);
+            btnSuggestion.setBounds(550,400,65,65);
             btnSuggestion.setIcon(new ImageIcon(imgSuggestion));
             btnSuggestion.setBorder(new LineBorder(Color.WHITE));
             btnSuggestion.setContentAreaFilled(false);
@@ -190,7 +207,7 @@ public class GameWindow extends JFrame implements ActionListener{
             add(btnSuggestion);
 
             btnSolution = new JButton();
-            btnSolution.setBounds(600,310,65,65);
+            btnSolution.setBounds(670,310,65,65);
             btnSolution.setIcon(new ImageIcon(imgSolution));
             btnSolution.setBorder(new LineBorder(Color.WHITE));
             btnSolution.setContentAreaFilled(false);
@@ -199,7 +216,7 @@ public class GameWindow extends JFrame implements ActionListener{
             add(btnSolution);
 
             btnSave = new JButton();
-            btnSave.setBounds(600,400,65,65);
+            btnSave.setBounds(670,400,65,65);
             btnSave.setIcon(new ImageIcon(imgSave));
             btnSave.setBorder(new LineBorder(Color.WHITE));
             btnSave.setContentAreaFilled(false);
@@ -208,35 +225,150 @@ public class GameWindow extends JFrame implements ActionListener{
             add(btnSave);
 
             btnVerify = new JButton();
-            btnVerify.setBounds(720,320,130,130);
+            btnVerify.setBounds(790,320,130,130);
             btnVerify.setIcon(new ImageIcon(imgVerify));
             btnVerify.setBorder(new LineBorder(Color.WHITE));
             btnVerify.setContentAreaFilled(false);
             btnVerify.setCursor(Cursor.getPredefinedCursor(12));
             btnVerify.addActionListener(this);
             add(btnVerify);
+
+            results = new JTextArea(10,10);
+            results.setBounds(600,130,250,150);
+            results.setBackground(new Color(255,212,143));
+            add(results);
+
         }catch(Exception ex){
             System.out.println(ex);
         }
     }
-
+    public void addTextArea(String pData){
+        results.append(pData);
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(back)){
-            mainWindow win = new mainWindow();
+            mainWindow win = new mainWindow(juegos);
             dispose();
         }
         if(e.getSource().equals(btnExit)){
             dispose();
             System.exit(0);
         }
-
+        if(e.getSource().equals(btnRestart)){ System.out.println("reiniciar"); }
+        if(e.getSource().equals(btnSuggestion)){ System.out.println("Sugerencia"); }
+        if(e.getSource().equals(btnSolution)){ System.out.println("AutoSolución"); }
+        if(e.getSource().equals(btnSave)){ System.out.println("Save"); }
+        if(e.getSource().equals(btnVerify)){ System.out.println("Verificar"); }
         for(int i = 0; i<matrixButton.size();i++){
             for(int j = 0; j<matrixButton.get(i).size();j++){
                 if(e.getSource().equals(matrixButton.get(i).get(j))){
-                    System.out.println(matrixButton.get(i).get(j).getText());
+                    actual[0]=i;
+                    actual[1]=j;
+                    numberSelect();
                 }
             }
+        }
+        for(int j=0;j<numbers2.size();j++){
+            if(e.getSource().equals(numbers2.get(j))){
+                selected = numbers2.get(j).getText();
+                selectedInt = Integer.parseInt(selected.toString());
+                matrixButton.get(actual[0]).get(actual[1]).setText(selected);
+                numbers.dispose();
+            }
+        }
+    }
+    public void componentsCrono(){
+        JLabel titulo = new JLabel("Tiempo:");
+        titulo.setBounds(20,60,90,40);
+        titulo.setFont(new Font("Times New Roman",Font.BOLD,13));
+        titulo.setBackground( Color.WHITE );
+        titulo.setForeground( Color.BLACK );
+        cronometro = new JLabel("00:00");
+        cronometro.setBounds(73,70,60,20);
+        cronometro.setFont(new Font("Times New Roman",Font.BOLD,13));
+        cronometro.setBackground( Color.WHITE );
+        cronometro.setForeground( Color.BLACK );
+        cronometro.setOpaque( true );
+        add(titulo);
+        add(cronometro);
+    }
+    public void generateTablero(){ }
+    @Override
+    public void run() {
+        Integer minInt = 0 , segInt = 0, milInt = 0;
+        String minStr="", segStr="", milStr="";
+        try{
+            while(cronometroActivo){
+                Thread.sleep( 4 );
+                //Incrementamos 4 milesimas de segundo
+                milInt += 4;
+
+                //Cuando llega a 1000 osea 1 segundo aumenta 1 segundo
+                //y las milesimas de segundo de nuevo a 0
+                if( milInt == 1000 )
+                {
+                    milInt = 0;
+                    segInt += 1;
+                    //Si los segundos llegan a 60 entonces aumenta 1 los minutos
+                    //y los segundos vuelven a 0
+                    if( segInt == 60 )
+                    {
+                        segInt = 0;
+                        minInt++;
+                    }
+                }
+                if( minInt < 10 ) minStr = "0" + minInt;
+                else minStr = minInt.toString();
+                if( segInt < 10 ) segStr = "0" + segInt;
+                else segStr = segInt.toString();
+
+                cronometro.setText( minInt + ":" + segInt);
+            }
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }
+    public void initCr() {
+        cronometroActivo = true;
+        hilo = new Thread( this );
+        hilo.start();
+    }
+    public void stopCr(){ cronometroActivo = false; }
+    public ArrayList<Game> getJuegos() { return juegos; }
+    public void setJuegos(ArrayList<Game> pGames){ juegos = pGames; }
+
+    public int getSelectedInt() { return selectedInt; }
+    public void setSelectedInt(int selectedInt) { this.selectedInt = selectedInt; }
+    public String getSelected(){ return selected; }
+    public void setSelected(String selectedP){ this.selected=selectedP; }
+
+    public void numberSelect(){
+        numbers = new JDialog();
+        numbers.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        numbers.setBounds(550,250,315,336);
+        numbers.getContentPane().setBackground(Color.WHITE);
+        numbers.setLayout(null);
+        numbers.setResizable(false);
+        numbers.setTitle("Nuevo valor");
+        numbers.setVisible(true);
+        int x = 0;
+        int y = 0;
+        Integer index = 1;
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                JButton nuevo = new JButton(index.toString());
+                nuevo.setBounds(x,y,100,100);
+                nuevo.setContentAreaFilled(true);
+                nuevo.setOpaque(true);
+                nuevo.addActionListener(this);
+                numbers.add(nuevo);
+                numbers2.add(nuevo);
+                index++;
+                x+=100;
+            }
+            x = 0;
+            y += 100;
         }
     }
 }
