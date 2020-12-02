@@ -501,7 +501,7 @@ getkakuro(I, J, N, M, R) :-
                 R = [Num | S]
             ;   columnsum([I, J], ColSum),
                 rowsum([I, J], RowSum),
-                (   (ColSum > 0, RowSum > 0)
+                (   (ColSum > 0; RowSum > 0)
                 ->  number_string(ColSum, CString),
                     number_string(RowSum, RString),
                     string_concat(CString, "-", String1),
